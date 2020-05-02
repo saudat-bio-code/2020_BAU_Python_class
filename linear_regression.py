@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 29 2020
-"""
+Created on Mon Apr 29 2020. 
+Summary of the file:
 
-###Linear regression
+Lets print out the slopes.
+    - use numpy
+    
+Then run linear regression with scikit learn:
+    - prepare 2012 data
+    - fit
+    - plot
+    - find error
+    
+    - prepare 1975 data
+    - fit
+    - plot
+    - find error
+    #i should update test/train split 
+"""
+###Linear regression - summary
+
 #find slopes
 old_slope_1975, old_intercept_1975 = np.polyfit(length_1975, depth_1975, 1)
 new_slope_2012, new_intercept_2012 = np.polyfit(length_2012, depth_2012, 1)
@@ -14,58 +30,45 @@ print('1975: intercept of length to depth =', old_intercept_1975)
 print('2012: slope of length to depth =', new_slope_2012)
 print('2012: intercept of length to depth =', new_intercept_2012)
 
-def draw_bs_pairs_linreg(x, y, size=1):
-    """
-    Perform pairs bootstrap for linear regression.
-    Params: x-data, y-data, size
-    """
+#linear regression with sklearn
+from sklearn.linear_model import LinearRegression
 
-    # Set up array of indices to sample from: inds
-    inds = np.arange(len(x))
-
-    # Initialize replicates
-    bs_slope_reps = np.empty(size)
-    bs_intercept_reps = np.empty(size)
-
-    # Generate replicates
-    for i in range(size):
-        bs_inds = np.random.choice(inds, size=len(inds))
-        bs_x, bs_y = x[bs_inds], y[bs_inds]
-        bs_slope_reps[i], bs_intercept_reps[i] = np.polyfit(bs_x, bs_y, 1)
-
-    return bs_slope_reps, bs_intercept_reps
-####
-slope_1975, intercept_1975 = np.polyfit(length_1975, depth_1975, 1)
-slope_2012, intercept_2012 = np.polyfit(length_2012, depth_2012, 1)
-
-bs_slope_reps_1975, bs_intercept_reps_1975 = \
-        draw_bs_pairs_linreg(length_1975, depth_1975, 1000)
-bs_slope_reps_2012, bs_intercept_reps_2012 = \
-        draw_bs_pairs_linreg(length_2012, depth_2012, 1000)
-
-slope_conf_int_1975 = np.percentile(bs_slope_reps_1975, [2.5, 97.5])
-slope_conf_int_2012 = np.percentile(bs_slope_reps_2012, [2.5, 97.5])
-intercept_conf_int_1975 = np.percentile(bs_intercept_reps_1975, [2.5, 97.5])
-intercept_conf_int_2012 = np.percentile(bs_intercept_reps_2012, [2.5, 97.5])
-
-print('1975: slope =', slope_1975,
-      '95% conf int =', slope_conf_int_1975)
-print('1975: intercept =', intercept_1975,
-      '95% conf int =', intercept_conf_int_1975)
-print('2012: slope =', slope_2012,
-      '95% conf int =', slope_conf_int_2012)
-print('2012: intercept =', intercept_2012,
-      '95% conf int =', intercept_conf_int_2012)
-
-#now plot it
-plt.plot(length_1975, depth_1975, marker='.',
-         linestyle='none', color='blue', alpha=0.5)
-
-plt.plot(length_2012, depth_2012, marker='.',
-         linestyle='none', color='red', alpha=0.5)
-
-plt.title('Linear regressions of G. scandens beak depth vs length')
-plt.xlabel('beak length (mm)')
-plt.ylabel('beak depth (mm)')
-plt.legend(('1975', '2012'), loc='upper left')
+#prep data for 1975
+x = length_1975
+y = depth_1975 
+x = x.reshape(-1, 1)
+y = y.reshape(-1, 1)
+regressor = LinearRegression()
+regressor.fit(x, y)
+y_pred = regressor.predict(x)
+#plot the model
+plt.figure()
+plt.scatter(x, y, color = 'orange')
+plt.plot(x, y_pred, color = 'blue')
+plt.title('Length versus Depth of beak in 1975')
+plt.xlabel('Length')
+plt.ylabel('Depth')
 plt.show()
+#finding error
+msqe = sum((y_pred - y) * (y_pred - y)) / y.shape[0]
+rmse = np.sqrt(msqe)
+
+#prep data for 2012
+x = length_2012
+y = depth_2012 
+x = x.reshape(-1, 1)
+y = y.reshape(-1, 1)
+regressor = LinearRegression()
+regressor.fit(x, y)
+y_pred = regressor.predict(x)
+#plot
+plt.figure()
+plt.scatter(x, y, color = 'blue')
+plt.plot(x, y_pred, color = 'black')
+plt.title('Length versus Depth of beak in 2012')
+plt.xlabel('Length')
+plt.ylabel('Depth')
+plt.show()
+#finding error
+msqe = sum((y_pred - y) * (y_pred - y)) / y.shape[0]
+rmse = np.sqrt(msqe)
