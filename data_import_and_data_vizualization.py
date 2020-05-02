@@ -97,11 +97,12 @@ plt.ylabel('Depth of Beaks [mm]')
 plt.legend(('1975', '2012'), loc='lower right');
 
 plt.show()
-#next we want to vizualize average difference overtime using boxplots
+### next we want to vizualize average difference overtime using boxplots ###
 depth_list = [depth_1975,depth_2012]
 length_list = [length_1975,length_2012]
 fig = plt.figure(1, figsize=(9, 6))
 cpd_plot_ex= fig.add_subplot(111)
+##depth boxplot
 bplot = cpd_plot_ex.boxplot(depth_list,patch_artist=True)
 cpd_plot_ex.set_xticklabels(['1975', '2012'])
 
@@ -111,11 +112,25 @@ for box in bplot['boxes']:
     # change fill color
     box.set( facecolor = 'yellow' )
     
-fig.savefig('fig.png', bbox_inches='tight')
-
-#fig = plt.figure(1, figsize=(9, 6))
-#cpd_plot_ex.= fig.add_subplot(111)
-#bplot = cpd_plot_ex.boxplot(length_list)
-#fig.savefig('fig1.png', bbox_inches='tight')
+#fig.savefig('fig.png', bbox_inches='tight')
 plt.show()
 fig.clf()
+## length boxplot
+
+length_box = plt.figure(1, figsize=(9, 6))
+length_box_plot_ex= length_box.add_subplot(111)
+bplot = length_box_plot_ex.boxplot(length_list,
+    patch_artist=True)
+length_box_plot_ex.set_xticklabels(['1975', '2012'])
+
+for box in bplot['boxes']:
+    # change outline color
+    box.set( color='black', linewidth=2)
+    # change fill color
+    box.set( facecolor = 'green' )
+    
+plt.ylabel('Length of Beaks [mm]')
+plt.show()
+fig.clf()
+
+
