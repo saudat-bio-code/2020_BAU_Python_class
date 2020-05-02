@@ -5,7 +5,14 @@ Created on Mon Apr 29 2020
 """
 
 ###Linear regression
-#function ----
+#find slopes
+old_slope_1975, old_intercept_1975 = np.polyfit(length_1975, depth_1975, 1)
+new_slope_2012, new_intercept_2012 = np.polyfit(length_2012, depth_2012, 1)
+
+print('1975: slope of length to depth =', old_slope_1975)
+print('1975: intercept of length to depth =', old_intercept_1975)
+print('2012: slope of length to depth =', new_slope_2012)
+print('2012: intercept of length to depth =', new_intercept_2012)
 
 def draw_bs_pairs_linreg(x, y, size=1):
     """
